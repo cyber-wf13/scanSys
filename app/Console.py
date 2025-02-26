@@ -1,24 +1,22 @@
 class Console:
   def __init__(self):
-    self.helloBanner = 'Інтерактивний сеанс. Виберіть доступний пункт\n'
+    self.helloBanner = 'Інтерактивний сеанс. Виберіть доступний пункт'
     self.banner = ''
     self.userInput = ''
-    self.scenarios = {'bye': {'method': self.bye, 'args': []}}
+    self.scenarios = {'bye': {'method': self.bye, 'args': [], 'kwargs': {}}}
 
   def execScenarios(self):
     key = str.lower(self.userInput) 
     if key in self.scenarios:
 #      print('Scene: ' + key)
-      self.scenarios[key]['method'](*self.scenarios[key]['args'])
+      self.scenarios[key]['method'](*self.scenarios[key]['args'], **self.scenarios[key]['kwargs'])
 
-  def addScenario(self, key, method, banner):
+  def addScenario(self, key, method, banner, *args, **kwargs):
     self.updateHelloBanner(banner)
     self.scenarios[key] = {}
-    self.scenarios[key]['method'] = method[0]
-    if len(method) > 1:
-      self.scenarios[key]['args'] = method[1:]
-    else:
-      self.scenarios[key]['args'] = []
+    self.scenarios[key]['method'] = method
+    self.scenarios[key]['args'] = args
+    self.scenarios[key]['kwargs'] = kwargs 
 
     
   def start(self):
@@ -39,7 +37,7 @@ class Console:
     self.helloBanner += '\n' + text
 
   def bye(self):
-    self.printBanner('GoodBye')
+    self.printBanner('Good Bye')
     quit()
 
   # def test(self):
