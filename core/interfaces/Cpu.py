@@ -9,4 +9,6 @@ class Cpu (System):
     self.COUNT = self.system.cpu_count(logical=False)
     self.FREQ = self.system.cpu_freq()
 
-    
+  def getUsage(self, test, testDict, t2):
+    print(repr(self.USAGE[0]))
+    print(test, testDict['t'], t2)
