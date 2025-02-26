@@ -1,3 +1,4 @@
+from app.Console import Console
 from core.System import System
 from core.interfaces.Cpu import Cpu
 from core.interfaces.Disk import Disk
@@ -9,6 +10,10 @@ cpu = Cpu()
 mem = Memory()
 disk = Disk()
 net = Network()
+con = Console()
+con.addScenario('test2', Console.test, '(test) Тестовий сценарій')
+con.start()
+
 # print(cpu.USAGE, cpu.COUNT, cpu.FREQ)
 # print(mem.VIRT)
 # print(repr(disk.PATR))
