@@ -1,6 +1,11 @@
 from core.System import System
 
 class Disk (System):
-  def __init__(self):
-    System.__init__(self)
-    self.PATR = self.system.disk_partitions()
+  def getParts(self):
+    self.PARTS = self.system.disk_partitions()
+    for part in self.PARTS:
+      print("""{0.device}
+  Точка монтування: {0.mountpoint}
+  Файлова система: {0.fstype}
+  Додаткові опції: {0.opts}""".format(part))
+

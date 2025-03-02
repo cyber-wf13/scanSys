@@ -1,9 +1,6 @@
 from core.System import System
 
 class Memory (System):
-  def __init__(self):
-    System.__init__(self)
+  def getCounters(self):
     self.VIRT = self.system.virtual_memory()
-
-  def getMem(self):
-    print(repr(self.VIRT))
+    print("Загалом: {0.total}\n Вільна: {0.available}\n Відсоток використання: {0.percent}".format(self.VIRT))
