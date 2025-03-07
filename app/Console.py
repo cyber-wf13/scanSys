@@ -1,24 +1,38 @@
+from argparse import ArgumentParser
+
 class Console:
   def __init__(self):
     self.helloBanner = 'Інтерактивний сеанс. Виберіть доступний пункт'
     self.banner = ''
     self.userInput = ''
-    self.scenarios = {'bye': {'method': self.bye, 'args': [], 'kwargs': {}}}
+    self.scenarios = {'bye': {'method': self.bye, 'args': [], 'kwargs': {}, 'cli': None}}
+    self.cli = ArgumentParser(description='Отримання інформації про систему. За замовчуванням, використані опції -cmdn')
+    self.argsCLI = None
+
+  def initCLIArgs(self):
+    self.argsCLI = vars(self.cli.parse_args())
 
   def execScenarios(self):
     key = str.lower(self.userInput) 
     if key in self.scenarios:
-#      print('Scene: ' + key)
       self.scenarios[key]['method'](*self.scenarios[key]['args'], **self.scenarios[key]['kwargs'])
-
-  def addScenario(self, key, method, banner, *args, **kwargs):
+  
+  def execCLIScenario(self):
+    for key,val in self.argsCLI.items():
+      if key in self.scenarios and val == True:
+        self.scenarios[key]['method'](*self.scenarios[key]['args'], **self.scenarios[key]['kwargs'])
+      
+  def addScenario(self, key, method, banner, *args, cli = None, **kwargs):
     self.updateHelloBanner(banner)
     self.scenarios[key] = {}
     self.scenarios[key]['method'] = method
     self.scenarios[key]['args'] = args
     self.scenarios[key]['kwargs'] = kwargs 
+    self.scenarios[key]['cli'] = cli or key
+  
+  def addCliScenario(self, *args, method=None, **kwargs):
+    self.cli.add_argument(*args, **kwargs)
 
-    
   def start(self):
     self.updateHelloBanner('(bye) Завершити')
     while True:
@@ -39,7 +53,3 @@ class Console:
   def bye(self):
     self.printBanner('Good Bye')
     quit()
-
-  # def test(self):
-  #   self.printBanner('test string')
-  #   print(repr(self.scenarios))
