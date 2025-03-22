@@ -12,15 +12,6 @@ mem = Memory()
 disk = Disk()
 net = Network()
 
-# con.addScenario('cpu_use', cpu.getUsage, '(cpu_use) Використання CPU', False)
-# con.addScenario('cpu_times', cpu.getTimes, '(cpu_times) Час використання CPU', False)
-# con.addScenario('cpu_count', cpu.getCount, '(cpu_count) Кількість фізичних ядер CPU')
-# con.addScenario('cpu_freq', cpu.getFreq, '(cpu_freq) Поточна частота CPU', True)
-# con.addScenario('net_addr', net.getAddrs, '(net_addr) IP адреси призначені на інтерфейсах')
-# con.addScenario('net_count', net.getCounters, '(net_count) Статистика мережевих інтерфейсів')
-# con.addScenario('mem_count', mem.getCounters, '(mem_count) Використання RAM')
-# con.addScenario('disk_part', disk.getParts, '(disk_part) Доступні диски')
-
 cli = Console()
 cli.addScenario('-cu', '--cpu-use', methodParams={'name': cpu.getUsage}, help = 'Використання CPU', action='store_true')
 cli.addScenario('-ct', '--cpu-times', methodParams={'name': cpu.getTimes}, help = 'Час використання CPU', action='store_true')
@@ -32,10 +23,4 @@ cli.addScenario('-mc', '--mem-count', methodParams={'name': mem.getCounters}, he
 cli.addScenario('-dp', '--disk-part', methodParams={'name': disk.getParts}, help = 'Доступні диски', action='store_true')
 cli.initArgs()
 
-if cli.args['inter']:
-  cli.start()
-elif cli.argsCount == 0:
-  cli.parser.print_help()
-else:
-  cli.execScenario()
-
+cli.start()
