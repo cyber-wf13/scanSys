@@ -1,30 +1,31 @@
-class Console:
+from app.CLI import CLI
+
+class Console (CLI):
   def __init__(self):
+    CLI.__init__(self)
     self.helloBanner = 'Інтерактивний сеанс. Виберіть доступний пункт'
     self.banner = ''
     self.userInput = ''
-    self.scenarios = {'bye': {'method': self.bye, 'args': [], 'kwargs': {}, 'cli': None}}
-    print('console: ', repr(self.scenarios))
+    self.addScenario('-i', '--inter', help = 'Працювати в інтерактивному режимі', action='store_true')
+    self.addScenario('-b', '--bye', help = 'Завершити', action='store_true', methodParams={'name': self.bye})
 
-  def execScenarios(self):
-    key = str.lower(self.userInput) 
-    if key in self.scenarios:
-      self.scenarios[key]['method'](*self.scenarios[key]['args'], **self.scenarios[key]['kwargs'])
+  def execScenario(self):
+    if self.userInput in self.args:
+      self.args[self.userInput] = True
+    CLI.execScenario(self)
+    self.args[self.userInput] = False
+    
       
-  def addScenario(self, key, method, banner, *args, cli = None, **kwargs):
-    self.updateHelloBanner(banner)
-    self.scenarios[key] = {}
-    self.scenarios[key]['method'] = method
-    self.scenarios[key]['args'] = args 
-    self.scenarios[key]['kwargs'] = kwargs 
-    self.scenarios[key]['cli'] = cli or key
+  def addScenario(self, *args, methodParams = None, **kwargs):
+    bannerText = "({0}){1}".format(self.getKeyFromArgs(args[1]), kwargs['help'])
+    self.updateHelloBanner(bannerText)
+    CLI.addScenario(self, *args, methodParams=methodParams, **kwargs)
   
   def start(self):
-    self.updateHelloBanner('(bye) Завершити')
     while True:
       try:
-        self.userInput = input(self.helloBanner + '\n')
-        self.execScenarios()
+        self.userInput = str.lower(input(self.helloBanner + '\n'))
+        self.execScenario()
       except KeyboardInterrupt:
         print('Процес завершений перериванням через клавіатуру (CTRL + C)')
         quit()
