@@ -38,11 +38,11 @@ class Console (CLI):
     Сама підсказка формується за допомогою опрацювання параметру help та ключа, який визначили при створенні
     аргументу
   """
-  def addScenario(self, *args, onlyCLI = False, methodParams = None, **kwargs):
+  def addScenario(self, *args, onlyCLI = False, methodParams = None, throwUserArg = True, **kwargs):
     if onlyCLI == False:
       bannerText = "({0}){1}".format(self.getKeyFromArgs(args[1]), kwargs['help'])
       self.updateHelloBanner(bannerText)
-    CLI.addScenario(self, *args, methodParams=methodParams, **kwargs)
+    CLI.addScenario(self, *args, methodParams=methodParams, throwUserArg = throwUserArg, **kwargs)
   
   """ 
     Основний цикл програми. На основі вибраного режиму виконується відповідна логіка
