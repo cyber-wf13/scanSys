@@ -2,11 +2,30 @@ from argparse import ArgumentParser
 from sys import argv
 
 class CLI:
+  toJson = False
+  formattedJson = {}
+  
   def __init__(self):
     self.parser = ArgumentParser(description='Отримання інформації про систему')
     self.args = None
     self.argsCount = len(argv) - 1 
     self.scenarios = {}
+    self.addScenario('-j', '--json', action='store_true', onlyCLI=True, methodParams={'name': self.setOuputToJson}, help = 'Збереження результатів у форматі json')
+  
+  def setOuputToJson(self, toJson):
+    print('set to json', toJson)
+    CLI.toJson = toJson
+
+  def updateFormattedJson(json):
+    CLI.formattedJson = json
+
+  def print(*values):
+    print(CLI.toJson)
+    if CLI.toJson:
+      print('save to json', CLI.formattedJson)
+    else:
+      print(*values)
+
 
   """ 
     Отримання аргументів в якості словника. Цей метод повинен завжди бути останній, після 
