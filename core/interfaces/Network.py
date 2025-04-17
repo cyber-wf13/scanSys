@@ -1,12 +1,14 @@
+import json
+from app.CLI import CLI
 from core.System import System
 
 class Network (System):
   def getAddrs(self):
     self.NIC_INFO = self.system.net_if_addrs()
-    for nic in self.NIC_INFO:
-      addrs = self.formatAddrs(self.NIC_INFO[nic])
-      print("{0}:\n{1}".format(nic, addrs))
+    addrInfo = self.formatAddrs()
+    self.updateAndPrintResult(addrInfo, 'net_addr', addrInfo)
 
+  # TODO: Реалізувати представлення в JSON. Як приклад - Disk.getParts
   def getCounters(self):
     self.COUNTERS = self.system.net_io_counters(pernic=True)
     for (nic, c) in self.COUNTERS.items():
@@ -19,17 +21,28 @@ class Network (System):
     Відкинуті пакети (INT|OUT): {1.dropin}|{1.dropout}\n""".format(nic, c))
 
     
-  def formatAddrs(self, info):
+  def formatAddrs(self):
     formatedStr = ""
-    for i in info:
-      if i.family == 2:
-        formatedStr += "IPv4: {0.address}\n {0.netmask}\n".format(i)
+    addrInfo = []
+    for nic in self.NIC_INFO:
+      addrInfoByIface = {'name': nic, 'IPv4': None, 'IPv6': None, 'MAC': None}
+      formatedStr += "{0}:\n".format(nic)
+      for iface in self.NIC_INFO[nic]:
+        if iface.family == 2:
+          formatedStr += "IPv4: {0.address}\n {0.netmask}\n".format(iface)
+          addrInfoByIface["IPv4"] = {"address": iface.address, "netmask": iface.netmask}
       
-      if i.family == 10:
-        formatedStr += "IPv6: {0.address}\n {0.netmask}\n".format(i)
+        if iface.family == 10:
+          formatedStr += "IPv6: {0.address}\n {0.netmask}\n".format(iface)
+          addrInfoByIface["IPv6"] = {"address": iface.address, "netmask": iface.netmask}
       
-      if i.family == 17:
-        formatedStr += "MAC: {0.address}\n".format(i)
+        if iface.family == 17:
+          formatedStr += "MAC: {0.address}\n".format(iface)
+          addrInfoByIface["MAC"] = iface.address
+      
+      addrInfo.append(addrInfoByIface)
+    if CLI.toJson:
+      return addrInfo
     return formatedStr        
 
 
